@@ -62,7 +62,7 @@ func httpRequestBody(a *HTTPEndpointExpr) *AttributeExpr {
 	}
 
 	// 2. Remove header and param attributes
-	body := NewMappedAttributeExpr(payload)
+	body := NewMappedAttributeExpr(DupAtt(payload))
 	removeAttributes(body, headers)
 	removeAttributes(body, params)
 	if a.MapQueryParams != nil && *a.MapQueryParams != "" {

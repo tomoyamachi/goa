@@ -50,7 +50,7 @@ func NewMappedAttributeExpr(att *AttributeExpr) *MappedAttributeExpr {
 	}
 	ma := &MappedAttributeExpr{
 		AttributeExpr: &AttributeExpr{
-			Type:         Dup(att.Type),
+			Type:         att.Type,
 			References:   att.References,
 			Bases:        att.Bases,
 			Description:  att.Description,
@@ -97,7 +97,7 @@ func DupMappedAtt(ma *MappedAttributeExpr) *MappedAttributeExpr {
 		reverseMap[k] = v
 	}
 	return &MappedAttributeExpr{
-		AttributeExpr: DupAtt(ma.AttributeExpr),
+		AttributeExpr: ma.AttributeExpr,
 		nameMap:       nameMap,
 		reverseMap:    reverseMap,
 	}
