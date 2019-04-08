@@ -105,6 +105,8 @@ func ResponseEncoder(ctx context.Context, w http.ResponseWriter) Encoder {
 			return gob.NewEncoder(w), "application/gob"
 		case "text/html":
 			return newTextHTMLEncoder(w), "text/html"
+		case "text/csv":
+			return newTextCSVEncoder(w), "text/csv"
 		}
 		return nil, ""
 	}
@@ -139,6 +141,8 @@ func ResponseEncoder(ctx context.Context, w http.ResponseWriter) Encoder {
 					enc = gob.NewEncoder(w)
 				case ct == "text/html" || strings.HasSuffix(ct, "+html"):
 					enc = newTextHTMLEncoder(w)
+				case ct == "text/csv" || strings.HasSuffix(ct, "+csv"):
+					enc = newTextCSVEncoder(w)
 				default:
 					enc = json.NewEncoder(w)
 				}
@@ -295,5 +299,24 @@ func (e *textHTMLDecoder) Decode(v interface{}) error {
 		err = fmt.Errorf("can't decode text/html to %T", c)
 	}
 
+	return err
+}
+
+func newTextCSVEncoder(w io.Writer) Encoder {
+	return &textCSVEncoder{w}
+}
+
+type textCSVEncoder struct {
+	w io.Writer
+}
+
+func (e *textCSVEncoder) Encode(v interface{}) error {
+	var err error
+	switch c := v.(type) {
+	case []byte:
+		_, err = e.w.Write(c)
+	default:
+		err = fmt.Errorf("can't encode %T as text/csv", c)
+	}
 	return err
 }
